@@ -12,7 +12,7 @@ EXTRA_ARGS += -j 8 # Use this for faster simulation
 
 # Connects cocotb test.py -> TB in verilog
 TOPLEVEL = riscv_tb
-MODULE = cocotb_test
+MODULE = test
 
 all:
 	@echo "Select out of following options:"
@@ -50,7 +50,7 @@ data.bin:
 	riscv32-unknown-elf-objcopy -O binary -j .data -j .sdata core.elf data.bin
 
 # Cocotb's makefile calls verilator and runs Python against the build simulation
-simulation: code.mem data.mem
+simulation: code.mem data.mem del_extras
 	$(MAKE) -f $(shell cocotb-config --makefiles)/Makefile.sim \
 		SIM=$(SIM) \
 		TOPLEVEL_LANG=$(TOPLEVEL_LANG) \
@@ -59,6 +59,9 @@ simulation: code.mem data.mem
 		WAVES=$(WAVES) \
 		VERILOG_SOURCES="$(VERILOG_SOURCES)" \
 		EXTRA_ARGS="$(EXTRA_ARGS)"
+
+del_extras:
+	-rm -rf *.o *.bin *.elf *.xml sim_build
 
 del:
 	-rm -rf *.o *.mem *.bin *.elf *dump* *.xml sim_build

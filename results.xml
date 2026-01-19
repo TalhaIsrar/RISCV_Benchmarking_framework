@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1768863015" />
+    <testcase name="riscv_cocotb" classname="test" file="/home/talha/RISCV_Benchmarking_framework/test.py" lineno="7" time="0.0035943984985351562" sim_time_ns="183.0" ratio_time="50912.551870522686" />
+  </testsuite>
+</testsuites>
