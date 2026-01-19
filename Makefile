@@ -21,6 +21,40 @@ all:
 	@echo "  make riscv-tests"
 	@echo "  make custom"
 
+.PHONY riscv-tests
+riscv-tests: del
+	@echo "Starting riscv-tests"
+	$(MAKE) -C riscv-tests
+	$(MAKE) convert_mem
+
+
+# Convert .elf files to mem files
+convert_mem: code.mem data.mem simulation
+
+# Convert .bin files to .mem files in word addressable format
+code.mem: code.bin core.dump
+		hexdump -v -e '1/4 "%08x\n"' code.bin > code.mem
+
+data.mem: data.bin
+		hexdump -v -e '1/4 "%08x\n"' data.bin > data.mem
+
+# Extract code and data sections
+code.bin:
+	riscv32-unknown-elf-objcopy -O binary --only-section=.text core.elf code.bin
+
+data.bin: 
+	riscv32-unknown-elf-objcopy -O binary -j .data -j .sdata core.elf data.bin
+
+# Cocotb's makefile calls verilator and runs Python against the build simulation
+simulation: code.mem data.mem
+	$(MAKE) -f $(shell cocotb-config --makefiles)/Makefile.sim \
+		SIM=$(SIM) \
+		TOPLEVEL_LANG=$(TOPLEVEL_LANG) \
+		TOPLEVEL=$(TOPLEVEL) \
+		MODULE=$(MODULE) \
+		WAVES=$(WAVES) \
+		VERILOG_SOURCES="$(VERILOG_SOURCES)" \
+		EXTRA_ARGS="$(EXTRA_ARGS)"
 
 del:
 	-rm -rf *.o *.mem *.bin *.elf *dump* *.xml sim_build
