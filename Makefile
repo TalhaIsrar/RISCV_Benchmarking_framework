@@ -21,8 +21,7 @@ all:
 	@echo "  make dhrystone"
 	@echo "  make coremark"
 
-.PHONY custom riscv-tests
-
+.PHONY: custom riscv-tests
 custom: del
 	@echo "Starting Custom C tests"
 	$(MAKE) -C custom_c_test
