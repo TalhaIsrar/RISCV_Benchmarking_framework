@@ -26,10 +26,11 @@ async def riscv_cocotb(dut):
         await Timer(1, "ns")
 
         # Identify that main function is being called
-        if (dut.uut.wb_result.value == 12345678):
+        if (dut.uut.wb_result.value == 0x12345678):
             cocotb.log.info("Start") 
 
         # Finish Sim when we read DEADCODE (Added in start.s)
         if (dut.uut.wb_result.value == 0xDEADC0DE):
+            cocotb.log.info("End") 
             break 
 

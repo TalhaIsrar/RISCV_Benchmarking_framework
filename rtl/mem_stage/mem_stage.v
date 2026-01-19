@@ -61,7 +61,7 @@ module mem_stage(
     wire [7:0] uartData;
 
     assign uartData = op2_data[7:0];
-    assign uartWen = mem_write & (result == 32'hFFFF_FFFC);
+    assign uartWen = mem_write & (result == 32'hFFFF_0000);
     assign dmemWenFinal = mem_write && (!uartWen);
     wire read_timer = (result_delay == 32'hFFFF_FF00);
     assign read_data = read_timer ? timer_val : final_read_data;

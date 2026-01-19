@@ -16,27 +16,32 @@ MODULE = cocotb_test
 
 all:
 	@echo "Select out of following options:"
-	@echo "  make coremark"
-	@echo "  make dhrystone"
-	@echo "  make riscv-tests"
 	@echo "  make custom"
+	@echo "  make riscv-tests"
+	@echo "  make dhrystone"
+	@echo "  make coremark"
 
-.PHONY riscv-tests
+.PHONY custom riscv-tests
+
+custom: del
+	@echo "Starting Custom C tests"
+	$(MAKE) -C custom_c_test
+	$(MAKE) convert_mem
+
 riscv-tests: del
 	@echo "Starting riscv-tests"
 	$(MAKE) -C riscv-tests
 	$(MAKE) convert_mem
-
 
 # Convert .elf files to mem files
 convert_mem: code.mem data.mem simulation
 
 # Convert .bin files to .mem files in word addressable format
 code.mem: code.bin core.dump
-		hexdump -v -e '1/4 "%08x\n"' code.bin > code.mem
+	hexdump -v -e '1/4 "%08x\n"' code.bin > code.mem
 
 data.mem: data.bin
-		hexdump -v -e '1/4 "%08x\n"' data.bin > data.mem
+	hexdump -v -e '1/4 "%08x\n"' data.bin > data.mem
 
 # Extract code and data sections
 code.bin:
