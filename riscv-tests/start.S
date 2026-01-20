@@ -84,6 +84,17 @@ _start:
     TEST(sw)
     TEST(simple)
 
+    # Uncomment following for m extension
+#	TEST(div)
+#	TEST(divu)
+#	TEST(mul)
+#	TEST(mulh)
+#	TEST(mulhsu)
+#	TEST(mulhu)
+#	TEST(rem)
+#	TEST(remu)
+
+
 HALT:
     li t0,0xDEADC0DE
     j HALT
