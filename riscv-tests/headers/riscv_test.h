@@ -27,8 +27,13 @@ TEST_FUNC_NAME:				\
 	addi	a3,a3,1;		\
 	jal	zero,.prname_next;	\
 .prname_done:				\
+	addi	a0,zero,' ';	\
+	jal uart_putchar;		\
 	addi	a0,zero,'-';	\
 	jal uart_putchar;		\
+	addi	a0,zero,'>';	\
+	jal uart_putchar;		\
+	addi	a0,zero,' ';	\
 	jal uart_putchar;		\
 	lw ra, (sp);			\
 

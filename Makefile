@@ -5,7 +5,7 @@ WAVES = 0 # 1 for waveform debugging
 
 # Adding all .v and .sv files
 VERILOG_SOURCES := $(shell find $(PWD)/rtl -type f \( -name "*.v" -o -name "*.sv" \))
-VERILOG_INCLUDE := $(shell find $(PWD)/rtl -type d -printf '-I%p ')
+VERILOG_INCLUDE := $(shell find $(PWD)/rtl -type d)
 
 # EXTRA_ARGS += --trace --trace-structs --trace-fst --timing -j 8 # Use for debugging to generate wavefile
 EXTRA_ARGS += -j 8 # Use this for faster simulation
@@ -23,12 +23,12 @@ all:
 
 .PHONY: custom riscv-tests
 custom: del
-	@echo "Starting Custom C tests"
+	@echo "---------------- Starting Custom C tests ----------------"
 	$(MAKE) -C custom_c_test
 	$(MAKE) convert_mem
 
 riscv-tests: del
-	@echo "Starting riscv-tests"
+	@echo "---------------- Starting riscv-tests ----------------"
 	$(MAKE) -C riscv-tests
 	$(MAKE) convert_mem
 
@@ -37,9 +37,11 @@ convert_mem: code.mem data.mem simulation
 
 # Convert .bin files to .mem files in word addressable format
 code.mem: code.bin core.dump
+	@echo "---------------- Making code.mem ----------------"
 	hexdump -v -e '1/4 "%08x\n"' code.bin > code.mem
 
 data.mem: data.bin
+	@echo "---------------- Making data.mem ----------------"
 	hexdump -v -e '1/4 "%08x\n"' data.bin > data.mem
 
 # Extract code and data sections
@@ -51,6 +53,7 @@ data.bin:
 
 # Cocotb's makefile calls verilator and runs Python against the build simulation
 simulation: code.mem data.mem del_extras
+	@echo "---------------- Simulation Start ----------------"
 	$(MAKE) -f $(shell cocotb-config --makefiles)/Makefile.sim \
 		SIM=$(SIM) \
 		TOPLEVEL_LANG=$(TOPLEVEL_LANG) \
