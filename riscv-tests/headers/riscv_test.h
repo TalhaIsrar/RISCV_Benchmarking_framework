@@ -16,7 +16,7 @@
 	.global TEST_FUNC_RET;		\
 	.global uart_putchar;	\
 TEST_FUNC_NAME:				\
-	la sp, 0x10000FFC;		\
+	la sp, _stack_top;		\
 	sw ra, (sp);			\
 	lui	a3,%hi(.test_name);	\
 	addi a3,a3,%lo(.test_name);\
@@ -27,13 +27,13 @@ TEST_FUNC_NAME:				\
 	addi	a3,a3,1;		\
 	jal	zero,.prname_next;	\
 .prname_done:				\
-	addi	a0,zero,'.';	\
+	addi	a0,zero,'-';	\
 	jal uart_putchar;		\
 	jal uart_putchar;		\
 	lw ra, (sp);			\
 
 #define RVTEST_PASS			\
-	la sp, 0x10000FFC;		\
+	la sp, _stack_top;		\
 	sw ra, (sp);			\
 	addi a0, zero, 'P';		\
 	jal uart_putchar;		\
@@ -50,7 +50,7 @@ TEST_FUNC_NAME:				\
 
 
 #define RVTEST_FAIL			\
-	la sp, 0x10000FFC;		\
+	la sp, _stack_top;		\
 	sw ra, (sp);			\
 	addi a0, zero, 'F';		\
 	jal uart_putchar;		\

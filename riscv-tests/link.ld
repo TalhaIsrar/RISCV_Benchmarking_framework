@@ -26,4 +26,5 @@ SECTIONS
     __bss_end = .;
 } > DMEM
 
+  _stack_top = .;  
 }
