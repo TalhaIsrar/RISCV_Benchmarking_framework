@@ -59,6 +59,7 @@ simulation: code.mem data.mem del_extras
 		WAVES=$(WAVES) \
 		VERILOG_SOURCES="$(VERILOG_SOURCES)" \
 		EXTRA_ARGS="$(EXTRA_ARGS)"
+	$(MAKE) del_extras
 
 del_extras:
 	-rm -rf *.o *.bin *.elf *.xml sim_build

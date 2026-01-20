@@ -11,4 +11,3 @@ HALT:
     j HALT
     nop
     nop
-    nop
