@@ -21,7 +21,7 @@ all:
 	@echo "  make dhrystone"
 	@echo "  make coremark"
 
-.PHONY: custom riscv-tests
+.PHONY: custom riscv-tests dhrystone
 custom: del
 	@echo "---------------- Starting Custom C tests ----------------"
 	$(MAKE) -C custom_c_test
@@ -30,6 +30,11 @@ custom: del
 riscv-tests: del
 	@echo "---------------- Starting riscv-tests ----------------"
 	$(MAKE) -C riscv-tests
+	$(MAKE) convert_mem
+
+dhrystone: del
+	@echo "---------------- Starting Dhrystone Benchmark ----------------"
+	$(MAKE) -C dhrystone
 	$(MAKE) convert_mem
 
 # Convert .elf files to mem files

@@ -6,7 +6,7 @@ GCC-FLAGS = -march=rv32i_zicsr -mabi=ilp32
 #DHRY-CFLAGS += -DDHRY_ITERS=20000000 # Set iterations
 DHRY-CFLAGS += -DCPU_FREQ_HZ=75000000 # SET CLOCK FREQUENCY
 
-SRC = start.s dhry_1.c dhry_2.c strcmp.S malloc.c
+SRC = start.s dhry_1.c dhry_2.c strcmp.S malloc.c div.c
 HDR = dhry.h
 RISCV-GCC = riscv32-unknown-elf-gcc
 

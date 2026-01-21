@@ -1,8 +1,9 @@
 #include <stdint.h>
 
 extern char __bss_end[];
+extern char _stack_top[];
 
-static uint32_t *stack_ptr = (uint32_t *) _stack_top;
+static uint32_t *stack_ptr = (uint32_t *) 0x1000FFFF;
 static uint32_t *heap_ptr = (uint32_t *) __bss_end;
 
 void *
