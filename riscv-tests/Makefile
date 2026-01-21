@@ -7,7 +7,7 @@ ARCH  = rv32i   # rv32im for m unit
 ABI   = ilp32
 
 # Test directories (ADD MORE HERE)
-TEST_DIRS := rv32u # rv32um # M unit
+TEST_DIRS := rv32ui # rv32um # M unit
 
 # Includes & flags
 INCLUDES += -I./headers
