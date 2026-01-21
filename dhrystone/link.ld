@@ -44,4 +44,5 @@ SECTIONS
   } > DMEM
 
   /* Define heap and stack boundaries */
+  _stack_top = .;  
 }
