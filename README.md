@@ -1,57 +1,54 @@
-# RISCV Benchmarking Framework
+# RISC-V Benchmarking Framework
+
+This repository provides a testing framework for RISC-V based processors. I includes riscv-tests, dhrystone benchmark and coremark benchmark. It also includes a test.c file in folder custom_c_test for writing and testing c based programs.
+It was tested on a simplified version of my [RISC-V SoC](https://github.com/TalhaIsrar/RISCV-RV32IM-AXI4-Lite-SoC). The design is evolving as more bugs are being found.
+
+## 🔄 Usage
+To run any of the tests, after installing the pre-requisties, you can run the following commands:
+
+```bash
+make custom
+make riscv-tests
+make dhrystone
+make coremark
+```
 
 ## 🛠️ Prerequisites
 
-To run this project, ensure the following tools are installed:
-
-1. **Linux / WSL**
-2. **RISC-V GNU Toolchain**  
-   *Tested:* `riscv32-unknown-elf-gcc (g5115c7e44) 15.2.0`
-3. **Verilator**  
-   *Tested:* `Verilator 5.042 2025-11-02 rev v5.042-51-gd91574507`
-4. **cocotb**  
-   *Tested:* `Version 2.0.1`
-5. **Gtkwave (Optional)**
+* Linux / WSL
+* **RISC-V GNU Toolchain** (`riscv32-unknown-elf-gcc 15.2.0`)
+* **Verilator** (`v5.042`)
+* **cocotb** (`2.0.1`)
+* Gtkwave (optional)
 
 ---
 
-## 📦 Installation Guide
+## 📦 Installation
 
-### 1. Install RISC-V GNU Toolchain
+### 1️⃣ RISC-V GNU Toolchain (RV32I)
 
-#### Clone repository
 ```bash
 git clone https://github.com/riscv/riscv-gnu-toolchain
-cd ./riscv-gnu-toolchain/
-````
-
-#### Install dependencies
+cd riscv-gnu-toolchain
+```
 
 ```bash
-sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip python3-tomli \
+sudo apt-get install -y autoconf automake autotools-dev curl python3 python3-pip \
 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf \
 libtool patchutils bc zlib1g-dev libexpat-dev ninja-build git cmake \
 libglib2.0-dev libslirp-dev libncurses-dev
 ```
-
-#### Configure and build
 
 ```bash
 ./configure --prefix=$HOME/riscv32i --with-arch=rv32i --with-abi=ilp32
 make
 ```
 
-#### Add toolchain to PATH
-
 ```bash
-export RISCV=$HOME/riscv32i
-export PATH=$RISCV/bin:$PATH
 echo 'export RISCV=$HOME/riscv32i' >> ~/.bashrc
 echo 'export PATH=$RISCV/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
-
-#### Verify installation
 
 ```bash
 riscv32-unknown-elf-gcc --version
@@ -59,77 +56,42 @@ riscv32-unknown-elf-gcc --version
 
 ---
 
-### 2. Install Verilator
-
-#### Install dependencies
+### 2️⃣ Verilator
 
 ```bash
-sudo apt-get install git help2man perl python3 make autoconf g++ flex bison ccache
-sudo apt-get install libgoogle-perftools-dev numactl perl-doc
-sudo apt-get install libfl2 libfl-dev
-sudo apt-get install zlibc zlib1g zlib1g-dev
+sudo apt-get install -y git help2man perl python3 make autoconf g++ flex bison \
+ccache libgoogle-perftools-dev numactl perl-doc \
+libfl2 libfl-dev zlib1g zlib1g-dev
 ```
-
-#### Clone repository
 
 ```bash
 git clone https://github.com/verilator/verilator
 cd verilator
-```
-
-#### Select stable branch
-
-```bash
 git checkout stable
-```
-
-#### Configure and build
-
-```bash
-autoconf
-./configure
-make
-```
-
-#### Install and verify
-
-```bash
-make test
+autoconf && ./configure && make
 sudo make install
+```
+
+```bash
 verilator --version
 ```
 
 ---
 
-### 3. Install cocotb
-
-#### Install Python and system dependencies
+### 3️⃣ cocotb (Python Virtual Environment)
 
 ```bash
-sudo apt-get install make python3 python3-pip libpython3-dev
+sudo apt-get install -y python3 python3-pip python3-venv libpython3-dev
 ```
-
-#### Install virtual environment tools
-
-```bash
-sudo apt install python3-venv python3-full
-```
-
-#### Create and activate a virtual environment
 
 ```bash
 python3 -m venv ~/cocotb
 source ~/cocotb/bin/activate
-```
-
-#### Install cocotb packages
-
-```bash
 pip install cocotb cocotb-bus cocotb-test
 ```
-
-#### Verify installation
 
 ```bash
 python3 -c "import cocotb; print('cocotb OK')"
 ```
+
+---
