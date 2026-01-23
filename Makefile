@@ -4,7 +4,7 @@ TOPLEVEL_LANG ?= verilog
 WAVES = 0 # 1 for waveform debugging
 
 # Adding all .v and .sv files
-VERILOG_SOURCES := $(shell find $(PWD)/rtl -type f \( -name "*.v" -o -name "*.sv" \))
+VERILOG_SOURCES := $(shell find $(PWD)/rtl -type f \( -name "*.v" -o -name "*.sv" -o -name "*.vh" -o -name "*.svh" \))
 VERILOG_INCLUDE := $(shell find $(PWD)/rtl -type d)
 
 # EXTRA_ARGS += --trace --trace-structs --trace-fst --timing -j 8 # Use for debugging to generate wavefile
@@ -21,7 +21,7 @@ all:
 	@echo "  make dhrystone"
 	@echo "  make coremark"
 
-.PHONY: custom riscv-tests dhrystone coremark
+.PHONY: custom riscv-tests dhrystone coremark multest
 custom: del
 	@echo "---------------- Starting Custom C tests ----------------"
 	$(MAKE) -C custom_c_test
@@ -40,6 +40,11 @@ dhrystone: del
 coremark: del
 	@echo "---------------- Starting Coremark Benchmark ----------------"
 	$(MAKE) -C coremark
+	$(MAKE) convert_mem
+	
+multest: del
+	@echo "---------------- Starting multest ----------------"
+	$(MAKE) -C multest
 	$(MAKE) convert_mem
 
 # Convert .elf files to mem files

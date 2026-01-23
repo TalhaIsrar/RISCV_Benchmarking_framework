@@ -25,13 +25,13 @@ module hazard_unit(
     wire load_hazard;
 
     // For load we need to check if rs1 or rs2 is actually used in the instruction
-    assign id_rs2_used  = (opcode == 7'b0110011 ||
-                         opcode == 7'b0100011 ||
-                         opcode == 7'b1100011);
+    assign id_rs2_used  = (opcode == `OPCODE_RTYPE ||
+                         opcode == `OPCODE_STYPE ||
+                         opcode == `OPCODE_BTYPE);
 
-    assign id_rs1_used  = (opcode == 7'b0010011 ||
-                         opcode == 7'b0000011 ||
-                         opcode == 7'b1100111) || id_rs2_used;
+    assign id_rs1_used  = (opcode == `OPCODE_ITYPE ||
+                         opcode == `OPCODE_ILOAD ||
+                         opcode == `OPCODE_IJALR) || id_rs2_used;
 
     assign rs1_hazard = id_rs1_used && (id_rs1 == ex_rd);
     assign rs2_hazard = id_rs2_used && (id_rs2 == ex_rd);

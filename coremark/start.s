@@ -49,7 +49,7 @@ _init_reg:
     addi x30, zero, 0
 	addi x31, zero, 0
 
-    li t0,0xCAFEBEEF
+    #li t0,0xCAFEBEEF
     call main
     
 HALT:

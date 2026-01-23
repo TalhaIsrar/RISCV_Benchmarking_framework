@@ -93,8 +93,8 @@ module execute_stage(
         endcase
     end
         
-    assign op1_valid = pipeline_flush ? 0 : op1_alu;
-    assign op2_valid = pipeline_flush ? 0 : op2_alu;
+    assign op1_valid = op1_alu;
+    assign op2_valid = op2_alu;
 
     // Instantiate the PC Jump Module
     pc_jump pc_jump_inst (

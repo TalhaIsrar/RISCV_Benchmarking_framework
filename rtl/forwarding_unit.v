@@ -27,13 +27,13 @@ module forwarding_unit(
     assign valid_rs2_wb = rs2 == rd_wb && valid_rd_wb;
 
     always @(*) begin
-        operand_a_cntl = valid_rs1_mem ? 2'b01 :
-                        valid_rs1_wb  ? 2'b10  :
-                                        2'b00;
+        operand_a_cntl = valid_rs1_mem ? `FORWARD_MEM :
+                        valid_rs1_wb  ? `FORWARD_WB  :
+                                        `FORWARD_ORG;
 
-        operand_b_cntl = valid_rs2_mem ? 2'b01 :
-                        valid_rs2_wb  ? 2'b10  :
-                                        2'b00;
+        operand_b_cntl = valid_rs2_mem ? `FORWARD_MEM :
+                        valid_rs2_wb  ? `FORWARD_WB  :
+                                        `FORWARD_ORG;
     end
 
 endmodule

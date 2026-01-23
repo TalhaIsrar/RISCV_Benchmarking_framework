@@ -125,7 +125,7 @@ main(int argc, char *argv[])
 #endif
     /* first call any initializations needed */
     portable_init(&(results[0].port), &argc, argv);
-    ee_printf("Init Complete\n");
+    //ee_printf("Init Complete\n");
     /* First some checks to make sure benchmark will run ok */
     if (sizeof(struct list_head_s) > 128)
     {
@@ -267,7 +267,7 @@ for (i = 0; i < MULTITHREAD; i++)
 
     /* perform actual benchmark */
     start_time();
-    ee_printf("Got start time\n");
+    //ee_printf("Got start time\n");
 
 #if (MULTITHREAD > 1)
     if (default_num_contexts > MULTITHREAD)
