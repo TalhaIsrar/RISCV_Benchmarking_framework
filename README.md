@@ -13,6 +13,76 @@ make dhrystone
 make coremark
 ```
 
+## 📊 Results
+
+The framework was tested using a simplified RV32I version of my [RISC-V SoC](https://github.com/TalhaIsrar/RISCV-RV32IM-AXI4-Lite-SoC). The results are below:
+
+### RISCV-Tests
+
+The image below shows that the core passes all the architectural tests for the RV32I ISA. The files also have support to test RV32IM with a few modifications.
+
+![RISCV-Tests](imgs/riscv-tests.png)
+
+### Dhrystone
+
+The image below shows that the core is working correctly with dhrystone benchmark. The core has a timer support to count the number of cycles the benchmark execution takes. The results reported are hex values and need to be converted to decimal for score calculation.
+
+$$
+\text{Total Cycles} = \text{0x0044D147} = \text{4510023}
+$$
+$$
+\text{Iterations} = \text{0x2710} = \text{10000}
+$$
+$$
+\text{Clock Frequency} = \text{0x47868C0} = \text{75 MHz}
+$$
+$$
+\text{Cycles per Dhrystone} = \frac{\text{Total Cycles}}{\text{Iterations}} = \text{0x01C3} = \text{451}
+$$
+$$
+\text{Dhrystone per Second} = \frac{\text{Clock Frequency}}{\text{Cycles per Dhrystone}} = \text{0x28999} = \text{166297}
+$$
+
+These can be used to calculate Dhrystone results:
+
+$$
+\text{DMIPS} = \frac{\text{Dhrystone per Second}}{\text{1757}} = \text{94.65}
+$$
+$$
+\text{DMIPS/MHz} = \frac{\text{DMIPS}}{\text{Clock Frequency (in MHz)}} = \text{1.262}
+$$
+
+![Dhrystone](imgs/dhrystone.png)
+
+### Coremark
+
+The image below shows that the core is working correctly with coremark benchmark. The core has a timer support to count the number of cycles the benchmark execution takes. 
+
+$$
+\text{Total Ticks} = \text{881970821}
+$$
+$$
+\text{Clock Frequency} = \text{75 MHz}
+$$
+$$
+\text{Total time (secs)} = \frac{\text{Total Ticks}}{\text{Clock Frequency}} = \text{11.7596 (Core is Int so 11)} 
+$$
+$$
+\text{Iterations} = \text{1000}
+$$
+$$
+\text{Iterations/Sec} = \frac{\text{Iterations}}{\text{Total time (secs)}}= \text{90.9 (Core is Int so 90)}
+$$
+
+These can be used to calculate Coremark results:
+
+$$
+\text{Coremark/MHz} = \frac{\text{Iterations/Sec}}{\text{Clock Frequency (in MHz)}} = \text{1.212}
+$$
+
+![Coremark](imgs/coremark.png)
+
+
 ## 🛠️ Prerequisites
 
 * Linux / WSL
