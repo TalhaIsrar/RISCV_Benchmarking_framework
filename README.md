@@ -3,7 +3,39 @@
 This repository provides a testing framework for RISC-V based processors. I includes riscv-tests, dhrystone benchmark and coremark benchmark. It also includes a test.c file in folder custom_c_test for writing and testing c based programs.
 It was tested on a simplified version of my [RISC-V SoC](https://github.com/TalhaIsrar/RISCV-RV32IM-AXI4-Lite-SoC). The design is evolving as more bugs are being found.
 
-## 🔄 Usage
+## 📑 Table of Contents
+
+* [Repository Structure](#-repository-structure)
+* [Usage](#-usage)
+* [Results](#-results)
+  * [Riscv-Tests](#-riscv-test)
+  * [Dhrystone](#dhrystone)
+  * [Coremark](#coremark)
+* [How to run](#-how-to-run)
+* [Prerequisites](#-prerequisites)
+* [Installation](#-installation)
+* [Future Work](#-future-work)
+* [References](#-references)
+* [License](#-license)
+* [Contributions](#-contributions)
+
+
+## 📂 Repository Structure
+
+```
+custom_c_test         Write your own C program to test
+riscv-tests/          
+dhrystone/          
+coremark/          
+rtl/                  RTL code for RISCV Core
+imgs/                 Results
+Makefile
+test.py               Cocotb test file
+LICENSE
+README.md             Main documentation#
+```
+
+## 📑 Usage
 To run any of the tests, after installing the pre-requisties, you can run the following commands:
 
 ```bash
@@ -17,7 +49,7 @@ make coremark
 
 The framework was tested using a simplified RV32I version of my [RISC-V SoC](https://github.com/TalhaIsrar/RISCV-RV32IM-AXI4-Lite-SoC). The results are below:
 
-### RISCV-Tests
+### RISCV-Test
 
 The image below shows that the core passes all the architectural tests for the RV32I ISA. The files also have support to test RV32IM with a few modifications.
 
@@ -82,6 +114,14 @@ $$
 
 ![Coremark](imgs/coremark.png)
 
+## 🔄 How to run
+If you want to run the tests on your own core, there are certain things you need to make sure of:
+* Your code must have Memory Mapped UART and you need the address (Mine is 0xFFFF0000).
+* Your code must have Memory Mapped Timer and you need the address (Mine is 0xFFFFFF00).
+* These addresses need to be changed in multiple files where UART and timer are used.
+* You understand your memory size and layout. Make sure it is of big enough size and change according to specs in link.ld files.
+* Make sure of bit-width of memory, the Makefile assumes both IMEM and DMEM are 32 bits wide but this can be changed to 8 bits as well.
+* Make sure you have top module that you connect correctly to cocotb test.py and check module names match.
 
 ## 🛠️ Prerequisites
 
@@ -165,3 +205,33 @@ python3 -c "import cocotb; print('cocotb OK')"
 ```
 
 ---
+
+
+## 📌 Future Work
+
+* Adding more benchmarks
+* Making it adaptable for more extensions
+* Replace hardcoded values with parametric ones
+
+---
+
+
+## 🔗 References
+
+* [RISCV-Tests](https://github.com/riscv-software-src/riscv-tests/)
+* [Coremark](https://github.com/eembc/coremark)
+* [Dhrystone](https://github.com/sifive/benchmark-dhrystone)
+
+Huge shoutout to Shashank Sati's work on [Dummy32](https://github.com/satishashank/dummy32)
+
+---
+
+## 📄 License
+
+This project is released under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🤝 Contributions
+
+Contributions, suggestions, and issue reports are welcome! Feel free to fork and open pull requests.
