@@ -1,12 +1,12 @@
 DHRY-CFLAGS := -O1 -DNOENUM -Wno-implicit
 DHRY-CFLAGS += -fno-builtin-printf -fno-common -falign-functions=4 -nostartfiles 
 
-GCC-FLAGS = -march=rv32i -mabi=ilp32
+GCC-FLAGS = -march=rv32im -mabi=ilp32
 
 DHRY-CFLAGS += -DDHRY_ITERS=2000 # Set iterations
 DHRY-CFLAGS += -DCPU_FREQ_HZ=75000000 # SET CLOCK FREQUENCY
 
-SRC = start.s dhry_1.c dhry_2.c strcmp.S malloc.c div.c
+SRC = start.s dhry_1.c dhry_2.c strcmp.S malloc.c # div.c # Add if using base rv32i
 HDR = dhry.h
 RISCV-GCC = riscv32-unknown-elf-gcc
 

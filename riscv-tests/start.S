@@ -85,14 +85,14 @@ _start:
     TEST(simple)
 
     # Uncomment following for m extension
-#	TEST(div)
-#	TEST(divu)
-#	TEST(mul)
-#	TEST(mulh)
-#	TEST(mulhsu)
-#	TEST(mulhu)
-#	TEST(rem)
-#	TEST(remu)
+	TEST(div)
+	TEST(divu)
+	TEST(mul)
+	TEST(mulh)
+	TEST(mulhsu)
+	TEST(mulhu)
+	TEST(rem)
+	TEST(remu)
 
 
 HALT:

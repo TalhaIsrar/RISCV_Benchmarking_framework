@@ -3,7 +3,7 @@ ENTRY(_start)
 MEMORY
 {
   IMEM (rx) : ORIGIN = 0x00000000, LENGTH = 64K
-  DMEM (rw) : ORIGIN = 0x10000000, LENGTH = 32K
+  DMEM (rw) : ORIGIN = 0x10000000, LENGTH = 64K
 }
 
 SECTIONS
@@ -43,6 +43,4 @@ SECTIONS
     __bss_end = .;
   } > DMEM
 
-  /* Define heap and stack boundaries */
-  _stack_top = .;  
 }
