@@ -60,7 +60,7 @@ The image below shows that the core passes all the architectural tests for the R
 The image below shows that the core is working correctly with dhrystone benchmark. The core has a timer support to count the number of cycles the benchmark execution takes. The results reported are hex values and need to be converted to decimal for score calculation.
 
 $$
-\text{Total Cycles} = \text{0x004A4F89} = \text{4870025}
+\text{Total Cycles} = \text{0x0049DA5F} = \text{4840031}
 $$
 $$
 \text{Iterations} = \text{0x2710} = \text{10000}
@@ -69,19 +69,19 @@ $$
 \text{Clock Frequency} = \text{0x47868C0} = \text{75 MHz}
 $$
 $$
-\text{Cycles per Dhrystone} = \frac{\text{Total Cycles}}{\text{Iterations}} = \text{0x01E7} = \text{487}
+\text{Cycles per Dhrystone} = \frac{\text{Total Cycles}}{\text{Iterations}} = \text{0x01E7} = \text{484}
 $$
 $$
-\text{Dhrystone per Second} = \frac{\text{Clock Frequency}}{\text{Cycles per Dhrystone}} = \text{0x25994} = \text{154004}
+\text{Dhrystone per Second} = \frac{\text{Clock Frequency}}{\text{Cycles per Dhrystone}} = \text{0x25DE4} = \text{155108}
 $$
 
 These can be used to calculate Dhrystone results:
 
 $$
-\text{DMIPS} = \frac{\text{Dhrystone per Second}}{\text{1757}} = \text{87.65}
+\text{DMIPS} = \frac{\text{Dhrystone per Second}}{\text{1757}} = \text{88.2}
 $$
 $$
-\text{DMIPS/MHz} = \frac{\text{DMIPS}}{\text{Clock Frequency (in MHz)}} = \text{1.168}
+\text{DMIPS/MHz} = \frac{\text{DMIPS}}{\text{Clock Frequency (in MHz)}} = \text{1.178}
 $$
 
 ![Dhrystone](imgs/dhrystone.png)
