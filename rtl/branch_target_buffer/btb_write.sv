@@ -117,6 +117,6 @@ module btb_write(
                          write_valid2, write_tag2, write_target2, write_state2, 2'b00};
 
     // Calculate the next LRU value for current set
-    assign next_LRU_write = entry_exists ? current_LRU_write : insert_branch2;
+    assign next_LRU_write = insert_branch2;
 
 endmodule
