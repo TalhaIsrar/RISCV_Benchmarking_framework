@@ -91,25 +91,25 @@ $$
 The image below shows that the core is working correctly with coremark benchmark. The core has a timer support to count the number of cycles the benchmark execution takes. The benchmark was run by 10MHz but the core gives upto 185MHz on Ultrascale+ (xczu3eg-sbva484-1-i).
 
 $$
-\text{Total Ticks} = \text{117908141}
+\text{Total Ticks} = \text{134996356}
 $$
 $$
 \text{Clock Frequency} = \text{10 MHz}
 $$
 $$
-\text{Total time (secs)} = \frac{\text{Total Ticks}}{\text{Clock Frequency}} = \text{11.79 (Core is Int so 11)} 
+\text{Total time (secs)} = \frac{\text{Total Ticks}}{\text{Clock Frequency}} = \text{13.5 (Core is Int so 13)} 
 $$
 $$
 \text{Iterations} = \text{300}
 $$
 $$
-\text{Iterations/Sec} = \frac{\text{Iterations}}{\text{Total time (secs)}}= \text{25.44 (Core is Int so it become 27)}
+\text{Iterations/Sec} = \frac{\text{Iterations}}{\text{Total time (secs)}}= \text{25.95 (Core is Int so it become 26)}
 $$
 
 These can be used to calculate Coremark results:
 
 $$
-\text{Coremark/MHz} = \frac{\text{Iterations/Sec}}{\text{Clock Frequency (in MHz)}} = \text{2.54}
+\text{Coremark/MHz} = \frac{\text{Iterations/Sec}}{\text{Clock Frequency (in MHz)}} = \text{2.59}
 $$
 
 ![Coremark](imgs/coremark.png)
