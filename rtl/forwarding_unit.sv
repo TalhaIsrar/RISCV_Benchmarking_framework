@@ -20,22 +20,22 @@ module forwarding_unit(
     logic valid_rs2_mem;
     logic valid_rs2_wb;
 
-    assign valid_rd_mem = rd_mem != 5'b00000 && reg_file_wr_mem;
-    assign valid_rd_wb = rd_wb != 5'b00000 && reg_file_wr_wb;
+    assign valid_rd_mem = (rd_mem != 5'b00000) && reg_file_wr_mem;
+    assign valid_rd_wb  = (rd_wb != 5'b00000) && reg_file_wr_wb;
 
-    assign valid_rs1_mem = rs1 == rd_mem && valid_rd_mem;
-    assign valid_rs1_wb = rs1 == rd_wb && valid_rd_wb;
-    assign valid_rs2_mem = rs2 == rd_mem && valid_rd_mem;
-    assign valid_rs2_wb = rs2 == rd_wb && valid_rd_wb;
+    assign valid_rs1_mem = (rs1 == rd_mem) && valid_rd_mem;
+    assign valid_rs1_wb  = (rs1 == rd_wb) && valid_rd_wb;
+    assign valid_rs2_mem = (rs2 == rd_mem) && valid_rd_mem;
+    assign valid_rs2_wb  = (rs2 == rd_wb) && valid_rd_wb;
 
     always_comb begin
-        rs1_forward_cntl = valid_rs1_mem ? `FORWARD_MEM :
-                        valid_rs1_wb  ? `FORWARD_WB  :
-                                        `FORWARD_ORG;
+        rs1_forward_cntl =  valid_rs1_mem ? `FORWARD_MEM :
+                            valid_rs1_wb  ? `FORWARD_WB  :
+                                            `FORWARD_ORG;
 
-        rs2_forward_cntl = valid_rs2_mem ? `FORWARD_MEM :
-                        valid_rs2_wb  ? `FORWARD_WB  :
-                                        `FORWARD_ORG;
+        rs2_forward_cntl =  valid_rs2_mem ? `FORWARD_MEM :
+                            valid_rs2_wb  ? `FORWARD_WB  :
+                                            `FORWARD_ORG;
     end
 
 endmodule

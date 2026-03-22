@@ -1,16 +1,12 @@
-`include "m_definitions.svh"
-
 module riscv_m_unit(
 	input logic clk, 
-	input logic resetn, 
+	input logic rst, 
 	
 	input logic valid,
 	input logic[31:0] instruction,
 	input logic[31:0] rs1,
 	input logic[31:0] rs2,
     input logic[4:0] rd,
-    input logic[4:0] rs1_reg,
-    input logic[4:0] rs2_reg,
 
 	output logic wr,
 	output logic[31:0] result,
@@ -19,127 +15,108 @@ module riscv_m_unit(
     output logic[4:0] result_dest
 	);
 
-//// DATA SIGNALS
-logic [31:0] rs1_neg, rs2_neg;
+    // Internal operands register to avoid data loss
+    logic[31:0] rs1_r, rs2_r;
+    logic[31:0] rs1_hold, rs2_hold;
 
-// ALU inputs
-logic [31:0] R; // remainder
-logic [62:0] D; // divisor
-logic [31:0] Z; // quotient
-logic signed [32:0] mult_a;
-logic signed [32:0] mult_b;
-// ALU outputs
-logic sub_neg;
-logic [31:0] sub_result;  // subtraction's result
-logic [31:0] div_rem;     // divider's result
-logic [31:0] div_rem_neg; // divider's result inverted
-logic signed [65:0] product;     // multiplier's result
+    logic operand_select;
+    logic[2:0] inst_type;
+    logic [6:0] opcode;
+    logic [2:0] funct3;
+    logic [6:0] funct7;
 
-//// CONTROL SIGNALS
-logic [`MUX_R_LENGTH-1:0] mux_R;
-logic [`MUX_D_LENGTH-1:0] mux_D;
-logic [`MUX_Z_LENGTH-1:0] mux_Z;
-logic [`MUX_MULTA_LENGTH-1:0] mux_multA;
-logic [`MUX_MULTB_LENGTH-1:0] mux_multB;
-logic [`MUX_DIV_REM_LENGTH-1:0] mux_div_rem;
-logic [`MUX_OUT_LENGTH-1:0] mux_out;
+    logic is_m_ext, is_mul, is_div, is_rem, is_signed;
+    logic [1:0] mul_op;
+    logic mul_start, div_start, mul_done, div_done, mul_busy, div_busy;
+    logic [31:0] mul_result, quotient, remainder;
 
-// Internal operands register to avoid data loss
-logic[31:0] rs1_r;
-logic[31:0] rs2_r;
-
-logic[31:0] rs1_hold;
-logic[31:0] rs2_hold;
-
-// delay ready & busy by 1 cycle
-logic ready_delay;
-logic busy_delay;
-logic result_delay;
-always_ff @(posedge clk) begin
-    if (resetn) begin
-        ready_delay <= 1'b0;
-        busy_delay <= 1'b0;
-    end else begin
-        ready_delay <= ready;
-        busy_delay <= busy;
+    // Register to hold drs1 and rs2 if we have 2 consecutive m instructions
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            rs1_hold         <= 0;
+            rs2_hold         <= 0;
+            operand_select   <= 0;
+        end else if (valid && !(busy || ready)) begin
+            rs1_hold <= rs1;
+            rs2_hold <= rs2;
+            operand_select <= 1;
+        end else if (ready) begin
+            operand_select <= 0;
+        end
     end
-end
 
-logic operand_select;
 
-// Register to hold drs1 and rs2 if we have 2 consecutive m instructions
-always_ff @(posedge clk) begin
-    if (resetn) begin
-        rs1_hold <= 32'd0;
-        rs2_hold <= 32'b0;
-        operand_select <= 0;
-    end else if (valid && !(busy || ready)) begin
-        rs1_hold <= rs1;
-        rs2_hold <= rs2;
-        operand_select <= 1;
-    end else if (ready) begin
-        operand_select <= 0;
+    // Select operands to pass (registered one is M followed by M otherwise normal ones)
+    assign rs1_r = operand_select ? rs1_hold : rs1;
+    assign rs2_r = operand_select ? rs2_hold : rs2;
+
+    // Register to hold destination register ID
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            result_dest <= 5'd0;
+            inst_type <= 0;
+        end else if (valid && !busy) begin
+            result_dest <= rd;
+            inst_type <= {is_mul,is_div,is_rem};
+        end
     end
-end
-
-logic[31:0] rs1_select;
-logic[31:0] rs2_select;
-
-// Select operands to pass (registered one is M followed by M otherwise normal ones)
-assign rs1_r = operand_select ? rs1_hold : rs1;
-assign rs2_r = operand_select ? rs2_hold : rs2;
-
-//// SUB-BLOCK INSTANTIATION
-
-// CONTROLLER
-m_controller controller (
-    .clk(clk), .resetn(resetn), .pcpi_valid(valid), // control input
-    .instruction(instruction), .rs1(rs1_r), .rs2(rs2_r), // data inputs
-    .mux_R(mux_R), .mux_D(mux_D), .mux_Z(mux_Z), .mux_multA(mux_multA), .mux_multB(mux_multB), // control inputs
-    .mux_div_rem(mux_div_rem), .mux_out(mux_out), .pcpi_ready(ready), .pcpi_wr(wr), .pcpi_busy(busy), // control inputs
-    .rs1_neg(rs1_neg), .rs2_neg(rs2_neg) // data outputs
-);
 
 
-// REGISTER FILE
-m_registers registers(
-    .clk(clk), .resetn(resetn), .mux_multA(mux_multA), .mux_multB(mux_multB), .sub_neg(sub_neg), .mux_R(mux_R), .mux_D(mux_D), .mux_Z(mux_Z), // control inputs
-    .rs1(rs1_r), .rs2(rs2_r), .rs1_neg(rs1_neg), .rs2_neg(rs2_neg), .sub_result(sub_result), .product(product), // data inputs
-    .mult_a(mult_a), .mult_b(mult_b), .R(R), .D(D), .Z(Z) // data outputs
-);
+    // Instruction Decode
+    assign opcode = instruction[6:0];
+    assign funct3 = instruction[14:12];
+    assign funct7 = instruction[31:25];
 
+    assign is_m_ext = (opcode == 7'b0110011) &&
+                      (funct7 == 7'b0000001);
 
-// ALU
-m_alu alu(
-    .mux_div_rem(mux_div_rem), // control inputs
-    .R(R), .D(D), .Z(Z), .mult_a(mult_a), .mult_b(mult_b), // data inputs
-    .sub_neg(sub_neg), // control outputs
-    .sub_result(sub_result), .div_rem(div_rem), .div_rem_neg(div_rem_neg), .product(product) // data outputs
-);
+    // Operation Classification
+    assign is_mul = is_m_ext && (funct3 <= 3'b011);
+    assign is_div = is_m_ext && (funct3 == 3'b100 || funct3 == 3'b101);
+    assign is_rem = is_m_ext && (funct3 == 3'b110 || funct3 == 3'b111);
+    assign mul_start = is_mul && valid && !busy && !ready;
+    assign div_start = (is_div || is_rem) && !busy && valid && !ready;
 
-// Register to hold destination register ID
-always_ff @(posedge clk) begin
-    if (resetn)
-        result_dest <= 5'd0;
-    else if (valid && !busy)
-        result_dest <= rd;
-end
+    assign is_signed = (funct3 == 3'b100) || (funct3 == 3'b110); // Only needed for DIV and REM
 
-// COMBINATORIAL BLOCK
-always_comb begin
-    // MUX output selection
-    unique case (mux_out)
-        `MUX_OUT_ZERO:        result = '0;
-        `MUX_OUT_DIV_REM:     result = div_rem;
-        `MUX_OUT_DIV_REM_NEG: result = div_rem_neg;
-        `MUX_OUT_MULT_LOWER:  result = product[31:0];
-        `MUX_OUT_MULT_UPPER:  result = product[63:32];
-        `MUX_OUT_ALL1:        result = {32{1'b1}};
-        `MUX_OUT_MINUS_1:     result = -32'd1;
-        default:              result = '0;
-    endcase
-end
+    assign mul_op = funct3[1:0];
 
+    mul_unit mul_unit_inst (
+        .clk(clk),
+        .rst(rst),
+        .start(mul_start),
+        .mul_op(mul_op),
+        .rs1(rs1_r),
+        .rs2(rs2_r),
+        .result(mul_result),
+        .done(mul_done),
+        .busy(mul_busy)
+    );
 
+    radix2_divider #(.ITERS_PER_CYCLE(2)) radix4_divider_inst (
+        .clk(clk),
+        .rst(rst),
+        .start(div_start),
+        .dividend(rs1_r),
+        .divisor(rs2_r),
+        .is_signed(is_signed),
+        .quotient(quotient),
+        .remainder(remainder),
+        .done(div_done),
+        .busy(div_busy)
+    );
+
+    always_comb begin
+        case(inst_type)
+            3'b100: result = mul_result;
+            3'b010: result = quotient;
+            3'b001: result = remainder;
+            default: result = 32'd0;
+        endcase
+    end
+
+    assign ready = inst_type[2] ? mul_done : div_done;
+    assign wr = ready;
+    assign busy = inst_type[2] ? mul_busy : div_busy;
 
 endmodule

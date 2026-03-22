@@ -9,10 +9,9 @@ module fetch_stage(
     input logic btb_pc_valid,
     input logic btb_pc_predictTaken,
     output logic [31:0] instruction,
-    output logic [31:0] pc
+    output logic [31:0] pc,
+    output logic [31:0] next_pc
 );
-    
-    wire [31:0] next_pc;
 
     // Instantiate the PC module
     pc pc_inst (
@@ -26,6 +25,7 @@ module fetch_stage(
     // Instantiate the PC update module
     pc_update pc_update_inst (
         .pc(pc),
+        .pc_en(pc_en),
         .pc_jump_addr(pc_jump_addr),
         .btb_target_pc(btb_target_pc),
         .btb_pc_valid(btb_pc_valid),

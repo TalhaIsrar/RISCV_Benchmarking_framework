@@ -29,10 +29,9 @@ module hazard_unit(
     logic load_hazard;
 
     // decoded_instruction = {r_type_inst, i_type_inst, mem_write, wb_load, u_type_inst, b_type_inst, j_type_inst, aupic_inst, jalr_inst};
-    // For load we need to check if rs1 or rs2 is actually used in the instruction
+    // For load, check if rs1 or rs2 is actually used in the instruction
     assign id_rs2_used = decoded_instruction[8] || decoded_instruction[6] || decoded_instruction[3];
-    assign id_rs1_used = id_rs2_used || decoded_instruction[7] || 
-                        decoded_instruction[5] || decoded_instruction[0];
+    assign id_rs1_used = id_rs2_used || decoded_instruction[7] || decoded_instruction[5] || decoded_instruction[0];
 
     assign rs1_hazard = id_rs1_used && (id_rs1 == ex_rd);
     assign rs2_hazard = id_rs2_used && (id_rs2 == ex_rd);
